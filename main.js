@@ -14,21 +14,35 @@ sliders.forEach(function (slider) {
 
   let isDragging = false;
 
-  sliderSeparator.addEventListener('mousedown', function () {
+  sliderSeparator.addEventListener('mousedown', function() {
     isDragging = true;
   });
 
-  document.addEventListener('mouseup', function () {
-    isDragging = false;
+  sliderSeparator.addEventListener('touchstart', function() {
+      isDragging = true;
+  });
+  document.addEventListener('mouseup', function() {
+      isDragging = false;
+  });
+  document.addEventListener('touchend', function() {
+      isDragging = false;
   });
 
   document.addEventListener('mousemove', function (e) {
-    if (isDragging) {
-      let sliderRect = slider.getBoundingClientRect();
-      let newWidth = (e.clientX - sliderRect.left) /
-      sliderRect.width * 100;
-      sliderRange.value = newWidth;
-      updateSliderPosition();
-    }
+    processMove(e.clientX);
   });
+
+  document.addEventListener('touchmove', function (e) {
+    processMove(e.touches[0].clientX);
+  });
+
+  function processMove(x) {
+      if (isDragging) {
+          let sliderRect = slider.getBoundingClientRect();
+          let newWidth = (x - sliderRect.left) /
+              sliderRect.width * 100;
+          sliderRange.value = newWidth;
+          updateSliderPosition();
+      }
+  }
 });
